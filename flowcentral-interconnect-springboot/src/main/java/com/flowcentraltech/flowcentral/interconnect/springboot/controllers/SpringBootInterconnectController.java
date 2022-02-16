@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.flowcentraltech.flowcentral.interconnect.common.constants.DataSourceErrorCodeConstants;
 import com.flowcentraltech.flowcentral.interconnect.common.data.DataSourceRequest;
 import com.flowcentraltech.flowcentral.interconnect.common.data.DataSourceResponse;
+import com.flowcentraltech.flowcentral.interconnect.common.data.ProcedureRequest;
+import com.flowcentraltech.flowcentral.interconnect.common.data.ProcedureResponse;
 import com.flowcentraltech.flowcentral.interconnect.springboot.service.SpringBootInterconnectService;
 
 /**
@@ -49,7 +51,7 @@ public class SpringBootInterconnectController {
     }
 
     @PostMapping(path = "/datasource")
-    public DataSourceResponse createPostingConfiguration(@RequestBody DataSourceRequest req) {
+    public DataSourceResponse processDataSourceRequest(@RequestBody DataSourceRequest req) {
         DataSourceResponse resp = null;
         try {
             return springBootInterconnectService.processDataSourceRequest(req);
@@ -57,6 +59,22 @@ public class SpringBootInterconnectController {
             String errorMessage = e.getMessage();
             LOGGER.log(Level.SEVERE, errorMessage, e);
             resp = new DataSourceResponse();
+            resp.setErrorCode(DataSourceErrorCodeConstants.PROVIDER_SERVICE_EXCEPTION);
+            resp.setErrorMsg(errorMessage);
+        }
+
+        return resp;
+    }
+
+    @PostMapping(path = "/procedure")
+    public ProcedureResponse processDataSourceRequest(@RequestBody ProcedureRequest req) {
+    	ProcedureResponse resp = null;
+        try {
+            return springBootInterconnectService.executeProcedureRequest(req);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            LOGGER.log(Level.SEVERE, errorMessage, e);
+            resp = new ProcedureResponse();
             resp.setErrorCode(DataSourceErrorCodeConstants.PROVIDER_SERVICE_EXCEPTION);
             resp.setErrorMsg(errorMessage);
         }

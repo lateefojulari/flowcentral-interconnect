@@ -16,11 +16,11 @@
 package com.flowcentraltech.flowcentral.interconnect.common.data;
 
 /**
- * Data source response.
+ * Procedure response.
  * 
  * @author FlowCentral Technologies Limited
  * @since 1.0
  */
-public class DataSourceResponse extends BaseResponse {
+public class ProcedureResponse extends BaseResponse {
 
 }

@@ -37,12 +37,15 @@ import com.flowcentraltech.flowcentral.interconnect.common.constants.DataSourceO
 import com.flowcentraltech.flowcentral.interconnect.common.constants.LingualDateType;
 import com.flowcentraltech.flowcentral.interconnect.common.constants.LingualStringType;
 import com.flowcentraltech.flowcentral.interconnect.common.constants.RestrictionType;
+import com.flowcentraltech.flowcentral.interconnect.common.data.BaseRequest;
 import com.flowcentraltech.flowcentral.interconnect.common.data.DataSourceRequest;
 import com.flowcentraltech.flowcentral.interconnect.common.data.DataSourceResponse;
 import com.flowcentraltech.flowcentral.interconnect.common.data.DateRange;
 import com.flowcentraltech.flowcentral.interconnect.common.data.EntityFieldInfo;
 import com.flowcentraltech.flowcentral.interconnect.common.data.EntityInfo;
 import com.flowcentraltech.flowcentral.interconnect.common.data.OrderDef;
+import com.flowcentraltech.flowcentral.interconnect.common.data.ProcedureRequest;
+import com.flowcentraltech.flowcentral.interconnect.common.data.ProcedureResponse;
 import com.flowcentraltech.flowcentral.interconnect.common.data.QueryDef;
 import com.flowcentraltech.flowcentral.interconnect.common.data.ResolvedCondition;
 import com.flowcentraltech.flowcentral.interconnect.configuration.xml.ApplicationConfig;
@@ -460,7 +463,7 @@ public class Interconnect {
         return param;
     }
 
-    public Object getBeanFromJsonPayload(DataSourceRequest req) throws Exception {
+    public Object getBeanFromJsonPayload(BaseRequest req) throws Exception {
         String[] payload = req.getPayload();
         if (payload != null && payload.length == 1) {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -475,6 +478,14 @@ public class Interconnect {
         checkInitialized();
         DataSourceResponse resp = new DataSourceResponse();
         String[] payload = toJsonResultStringValues(result, req.getOperation(), req.getEntity());
+        resp.setPayload(payload);
+        return resp;
+    }
+
+    public ProcedureResponse createProcedureResponse(Object[] result, ProcedureRequest req) throws Exception {
+        checkInitialized();
+        ProcedureResponse resp = new ProcedureResponse();
+        String[] payload = toJsonResultStringValues(result, DataSourceOperation.LIST_LEAN, req.getEntity());
         resp.setPayload(payload);
         return resp;
     }
@@ -669,7 +680,7 @@ public class Interconnect {
         if (refType.object()) {
             for (EntityFieldInfo entityFieldInfo : entityInfo.getRefFieldList()) {
                 EntityInfo parentEntityInfo = getEntityInfo(entityFieldInfo.getReferences());
-                Object id = PropertyUtils.getNestedProperty(bean,
+                Object id = getBeanProperty(bean,
                         entityFieldInfo.getName() + "." + parentEntityInfo.getIdFieldName());
                 map.put(entityFieldInfo.getName(), id);
             }
@@ -688,7 +699,7 @@ public class Interconnect {
         if (list) {
             for (EntityFieldInfo entityFieldInfo : entityInfo.getListOnlyFieldList()) {
                 map.put(entityFieldInfo.getName(),
-                        PropertyUtils.getNestedProperty(bean, entityFieldInfo.getReferences()));
+                		getBeanProperty(bean, entityFieldInfo.getReferences()));
             }
         }
 
@@ -724,6 +735,15 @@ public class Interconnect {
         return map;
     }
 
+	private Object getBeanProperty(Object bean, String name) {
+		try {
+			return PropertyUtils.getNestedProperty(bean, name);
+		} catch (Exception e) {
+		}
+
+		return null;
+	}
+    
     private String ensureLongName(String applicationName, String name) {
         if (name != null && !name.trim().isEmpty() && name.indexOf('.') < 0) {
             return applicationName + "." + name;

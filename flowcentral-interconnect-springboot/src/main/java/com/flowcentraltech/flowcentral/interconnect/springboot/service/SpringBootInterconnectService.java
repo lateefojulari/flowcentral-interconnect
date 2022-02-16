@@ -17,6 +17,8 @@ package com.flowcentraltech.flowcentral.interconnect.springboot.service;
 
 import com.flowcentraltech.flowcentral.interconnect.common.data.DataSourceRequest;
 import com.flowcentraltech.flowcentral.interconnect.common.data.DataSourceResponse;
+import com.flowcentraltech.flowcentral.interconnect.common.data.ProcedureRequest;
+import com.flowcentraltech.flowcentral.interconnect.common.data.ProcedureResponse;
 
 /**
  * Flow central spring boot interconnect service.
@@ -36,4 +38,15 @@ public interface SpringBootInterconnectService {
      *                   if an error occurs
      */
     DataSourceResponse processDataSourceRequest(DataSourceRequest req) throws Exception;
+
+    /**
+     * Executes a procedure request.
+     * 
+     * @param req
+     *                the request to process
+     * @return the procedure response
+     * @throws Exception
+     *                   if an error occurs
+     */
+    ProcedureResponse executeProcedureRequest(ProcedureRequest req) throws Exception;
 }
