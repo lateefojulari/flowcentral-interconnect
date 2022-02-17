@@ -16,11 +16,44 @@
 package com.flowcentraltech.flowcentral.interconnect.common.data;
 
 /**
- * Data source response.
+ * Flow central interconnect base response class.
  * 
  * @author FlowCentral Technologies Limited
  * @since 1.0
  */
-public class DataSourceResponse extends BaseResponse {
+public abstract class BaseResponse {
+    
+    private String[] payload;
 
+    private String errorCode;
+
+    private String errorMsg;
+
+    public String[] getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String[] payload) {
+        this.payload = payload;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+    
+    public boolean error() {
+        return errorCode != null && errorMsg != null;
+    }
 }

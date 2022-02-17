@@ -13,14 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.flowcentraltech.flowcentral.interconnect.common.data;
+package com.flowcentraltech.flowcentral.interconnect.springboot.service;
 
 /**
- * Data source response.
+ * Convenient abstract base class for Flow central spring boot interconnect procedures.
  * 
  * @author FlowCentral Technologies Limited
  * @since 1.0
  */
-public class DataSourceResponse extends BaseResponse {
+public abstract class AbstractSpringBootInterconnectProcedure implements SpringBootInterconnectProcedure {
 
 }

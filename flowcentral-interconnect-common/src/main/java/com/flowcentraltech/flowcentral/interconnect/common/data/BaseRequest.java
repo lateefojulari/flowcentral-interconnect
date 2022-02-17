@@ -16,11 +16,31 @@
 package com.flowcentraltech.flowcentral.interconnect.common.data;
 
 /**
- * Data source response.
+ * Flow central interconnect base request class.
  * 
  * @author FlowCentral Technologies Limited
  * @since 1.0
  */
-public class DataSourceResponse extends BaseResponse {
+public abstract class BaseRequest {
+    
+    private String[] payload;
+    
+    private String entity;
+
+    public String[] getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String[] payload) {
+        this.payload = payload;
+    }
+
+	public String getEntity() {
+		return entity;
+	}
+
+	public void setEntity(String entity) {
+		this.entity = entity;
+	}
 
 }

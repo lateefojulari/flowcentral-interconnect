@@ -25,11 +25,9 @@ import com.flowcentraltech.flowcentral.interconnect.common.constants.DataSourceO
  * @author FlowCentral Technologies Limited
  * @since 1.0
  */
-public class DataSourceRequest {
+public class DataSourceRequest extends BaseRequest {
 
     private DataSourceOperation operation;
-    
-    private String entity;
     
     private Long id;
     
@@ -42,8 +40,6 @@ public class DataSourceRequest {
     private String order;
     
     private Long versionNo;
-    
-    private String[] payload;
     
     private boolean ignoreEmptyCriteria;
     
@@ -71,14 +67,6 @@ public class DataSourceRequest {
 
     public void setOperation(DataSourceOperation operation) {
         this.operation = operation;
-    }
-
-    public String getEntity() {
-        return entity;
-    }
-
-    public void setEntity(String entity) {
-        this.entity = entity;
     }
 
     public Long getId() {
@@ -152,14 +140,6 @@ public class DataSourceRequest {
     public void setLimit(int limit) {
         this.limit = limit;
     }
-
-    public String[] getPayload() {
-        return payload;
-    }
-
-    public void setPayload(String[] payload) {
-        this.payload = payload;
-    }
     
     public boolean clause() {
         return id != null || versionNo != null || query != null;
@@ -195,9 +175,9 @@ public class DataSourceRequest {
 
     @Override
     public String toString() {
-        return "DataSourceRequest [operation=" + operation + ", entity=" + entity + ", id=" + id + ", fieldName="
+        return "DataSourceRequest [operation=" + operation + ", entity=" + getEntity() + ", id=" + id + ", fieldName="
                 + fieldName + ", update=" + update + ", query=" + query + ", versionNo=" + versionNo + ", payload="
-                + Arrays.toString(payload) + ", ignoreEmptyCriteria=" + ignoreEmptyCriteria + ", offset=" + offset
+                + Arrays.toString(getPayload()) + ", ignoreEmptyCriteria=" + ignoreEmptyCriteria + ", offset=" + offset
                 + ", limit=" + limit + "]";
     }
 }
