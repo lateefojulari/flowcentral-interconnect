@@ -14,11 +14,34 @@
 	<description>Flow Central Interconnect</description>
 	<url>http://www.flowcentraltechnologies.com</url>
 
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>lateefojulari</id>
+			<name>Lateef Ojulari</name>
+			<email>lateef.ojulari@tcdng.com</email>
+			<organization>The Code Department</organization>
+			<organizationUrl>http://www.tcdng.com</organizationUrl>
+		</developer>
+	</developers>
+
 	<modules>
 		<module>flowcentral-interconnect-configuration</module>
 		<module>flowcentral-interconnect-common</module>
 		<module>flowcentral-interconnect-springboot</module>
 	</modules>
+
+	<scm>
+		<connection>scm:git:git://github.com/flowcentraltechnologies/flowcentral-interconnect.git</connection>
+		<developerConnection>scm:git:ssh://github.com:flowcentraltechnologies/flowcentral-interconnect.git</developerConnection>
+		<url>http://github.com/flowcentraltechnologies/flowcentral-interconnect/tree/master</url>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
