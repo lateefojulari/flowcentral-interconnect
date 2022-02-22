@@ -15,6 +15,8 @@
  */
 package com.flowcentraltech.flowcentral.interconnect.springboot.service;
 
+import com.flowcentraltech.flowcentral.interconnect.springboot.SpringBootInterconnect;
+
 /**
  * Convenient abstract base class for Flowcentral spring boot interconnect data source entity handler.
  * 
@@ -23,5 +25,15 @@ package com.flowcentraltech.flowcentral.interconnect.springboot.service;
  */
 public abstract class AbstractSpringBootInterconnectEntityDataSourceHandler
 		implements SpringBootInterconnectEntityDataSourceHandler {
+
+	private final SpringBootInterconnect interconnect;
+
+	public AbstractSpringBootInterconnectEntityDataSourceHandler(SpringBootInterconnect interconnect) {
+		this.interconnect = interconnect;
+	}
+
+	protected SpringBootInterconnect getInterconnect() {
+		return interconnect;
+	}
 
 }
