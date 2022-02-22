@@ -15,19 +15,22 @@
  */
 package com.flowcentraltech.flowcentral.interconnect.springboot.service;
 
+import com.flowcentraltech.flowcentral.interconnect.common.data.DataSourceRequest;
+
 /**
- * Flow central spring boot interconnect procedure.
+ * Flow central spring boot interconnect datasource entity handler.
  * 
  * @author FlowCentral Technologies Limited
  * @since 1.0
  */
-public interface SpringBootInterconnectProcedure {
+public interface SpringBootInterconnectDataSourceEntityHandler {
 
 	/**
-	 * Executes this procedure using supplied value instance
+	 * Processes a data source request for an entity
 	 * 
-	 * @param inst     the instance
-	 * @param readonly the read-only mode
+	 * @param implClass the entity type
+	 * @param req       the data source request
+	 * @return the processing result
 	 */
-	void execute(Object inst, boolean readonly);
+	Object[] process(Class<?> implClass, DataSourceRequest req);
 }

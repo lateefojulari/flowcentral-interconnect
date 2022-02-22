@@ -16,18 +16,12 @@
 package com.flowcentraltech.flowcentral.interconnect.springboot.service;
 
 /**
- * Flow central spring boot interconnect procedure.
+ * Convenient abstract base class for Flow central spring boot interconnect data source entity handler.
  * 
  * @author FlowCentral Technologies Limited
  * @since 1.0
  */
-public interface SpringBootInterconnectProcedure {
+public abstract class AbstractSpringBootInterconnectDataSourceEntityHandler
+		implements SpringBootInterconnectDataSourceEntityHandler {
 
-	/**
-	 * Executes this procedure using supplied value instance
-	 * 
-	 * @param inst     the instance
-	 * @param readonly the read-only mode
-	 */
-	void execute(Object inst, boolean readonly);
 }
