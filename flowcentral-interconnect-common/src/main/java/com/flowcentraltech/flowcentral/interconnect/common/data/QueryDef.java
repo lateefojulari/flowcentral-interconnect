@@ -71,4 +71,9 @@ public class QueryDef {
         }
     }
 
+	@Override
+	public String toString() {
+		return "QueryDef [filterRestrictionDefList=" + filterRestrictionDefList + "]";
+	}
+
 }
