@@ -15,22 +15,13 @@
  */
 package com.flowcentraltech.flowcentral.interconnect.springboot.service;
 
-import com.flowcentraltech.flowcentral.interconnect.common.data.DataSourceRequest;
-
 /**
- * Flow central spring boot interconnect datasource entity handler.
+ * Convenient abstract base class for Flowcentral spring boot interconnect data source entity handler.
  * 
  * @author FlowCentral Technologies Limited
  * @since 1.0
  */
-public interface SpringBootInterconnectDataSourceEntityHandler {
+public abstract class AbstractSpringBootInterconnectEntityDataSourceHandler
+		implements SpringBootInterconnectEntityDataSourceHandler {
 
-	/**
-	 * Processes a data source request for an entity
-	 * 
-	 * @param implClass the entity type
-	 * @param req       the data source request
-	 * @return the processing result
-	 */
-	Object[] process(Class<?> implClass, DataSourceRequest req);
 }

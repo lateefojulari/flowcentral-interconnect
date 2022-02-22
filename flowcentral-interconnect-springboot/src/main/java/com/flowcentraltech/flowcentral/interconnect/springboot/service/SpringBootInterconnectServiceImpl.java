@@ -111,8 +111,8 @@ public class SpringBootInterconnectServiceImpl implements SpringBootInterconnect
 		EntityInfo entityInfo = interconnect.getEntityInfo(req.getEntity());
 		Object[] result = null;
 		if (entityInfo.isWithHandler()) {
-			SpringBootInterconnectDataSourceEntityHandler handler = context.getBean(entityInfo.getHandler(),
-					SpringBootInterconnectDataSourceEntityHandler.class);
+			SpringBootInterconnectEntityDataSourceHandler handler = context.getBean(entityInfo.getHandler(),
+					SpringBootInterconnectEntityDataSourceHandler.class);
 			result = handler.process(entityInfo.getImplClass(), req);
 		} else {
 			switch (req.getOperation()) {
