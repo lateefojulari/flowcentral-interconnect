@@ -110,105 +110,111 @@ public class SpringBootInterconnectServiceImpl implements SpringBootInterconnect
 	public DataSourceResponse processDataSourceRequest(DataSourceRequest req) throws Exception {
 		EntityInfo entityInfo = interconnect.getEntityInfo(req.getEntity());
 		Object[] result = null;
-		// System.out.println("@Prime: req = " + req);
-		switch (req.getOperation()) {
-		case COUNT_ALL: {
-			CriteriaQuery<Long> cq = createLongQuery(entityInfo.getImplClass(), req);
-			Long count = em.createQuery(cq).getSingleResult();
-			result = new Object[] { count };
-		}
-			break;
-		case CREATE: {
-			Object reqBean = interconnect.getBeanFromJsonPayload(req);
-			em.persist(reqBean);
-			em.flush();
-			Object id = PropertyUtils.getProperty(reqBean, entityInfo.getIdFieldName());
-			result = new Object[] { id };
-		}
-			break;
-		case DELETE: {
-			Object reqBean = interconnect.getBeanFromJsonPayload(req);
-			if (req.version()) {
-				PropertyUtils.setProperty(reqBean, entityInfo.getVersionNoFieldName(), req.getVersionNo());
+		if (entityInfo.isWithHandler()) {
+			SpringBootInterconnectEntityDataSourceHandler handler = context.getBean(entityInfo.getHandler(),
+					SpringBootInterconnectEntityDataSourceHandler.class);
+			result = handler.process(entityInfo.getImplClass(), req);
+		} else {
+			switch (req.getOperation()) {
+			case COUNT_ALL: {
+				CriteriaQuery<Long> cq = createLongQuery(entityInfo.getImplClass(), req);
+				Long count = em.createQuery(cq).getSingleResult();
+				result = new Object[] { count };
 			}
+				break;
+			case CREATE: {
+				Object reqBean = interconnect.getBeanFromJsonPayload(req);
+				em.persist(reqBean);
+				em.flush();
+				Object id = PropertyUtils.getProperty(reqBean, entityInfo.getIdFieldName());
+				result = new Object[] { id };
+			}
+				break;
+			case DELETE: {
+				Object reqBean = interconnect.getBeanFromJsonPayload(req);
+				if (req.version()) {
+					PropertyUtils.setProperty(reqBean, entityInfo.getVersionNoFieldName(), req.getVersionNo());
+				}
 
-			em.remove(reqBean);
-		}
-			break;
-		case DELETE_ALL: {
-			CriteriaDelete<?> cd = createDeleteQuery(entityInfo.getImplClass(), req);
-			int count = em.createQuery(cd).executeUpdate();
-			result = new Object[] { count };
-		}
-			break;
-		case FIND:
-		case FIND_ALL:
-		case FIND_LEAN:
-		case LIST:
-		case LIST_ALL:
-		case LIST_LEAN: {
-			CriteriaQuery<?> cq = createQuery(entityInfo.getImplClass(), req);
-			TypedQuery<?> query = em.createQuery(cq);
-			List<?> results = query.getResultList();
-			if (!req.getOperation().isMultipleResult()) {
-				if (results.size() > 1) {
-					throw new RuntimeException(
-							"Mutiple records found on single item operation on entity [" + req.getEntity() + "].");
+				em.remove(reqBean);
+			}
+				break;
+			case DELETE_ALL: {
+				CriteriaDelete<?> cd = createDeleteQuery(entityInfo.getImplClass(), req);
+				int count = em.createQuery(cd).executeUpdate();
+				result = new Object[] { count };
+			}
+				break;
+			case FIND:
+			case FIND_ALL:
+			case FIND_LEAN:
+			case LIST:
+			case LIST_ALL:
+			case LIST_LEAN: {
+				CriteriaQuery<?> cq = createQuery(entityInfo.getImplClass(), req);
+				TypedQuery<?> query = em.createQuery(cq);
+				List<?> results = query.getResultList();
+				if (!req.getOperation().isMultipleResult()) {
+					if (results.size() > 1) {
+						throw new RuntimeException(
+								"Mutiple records found on single item operation on entity [" + req.getEntity() + "].");
+					}
+				}
+
+				result = results.toArray(new Object[results.size()]);
+			}
+				break;
+			case UPDATE:
+			case UPDATE_LEAN: {
+				Object reqBean = interconnect.getBeanFromJsonPayload(req);
+				Object id = PropertyUtils.getProperty(reqBean, entityInfo.getIdFieldName());
+				Object saveBean = em.find(entityInfo.getImplClass(), id);
+				Object versionNo = req.version()
+						? PropertyUtils.getProperty(saveBean, entityInfo.getVersionNoFieldName())
+						: null;
+				// References
+				interconnect.copy(entityInfo.getRefFieldList(), reqBean, saveBean);
+				// Fields
+				interconnect.copy(entityInfo.getFieldList(), reqBean, saveBean);
+
+				if (!req.getOperation().isLean()) {
+					// Child
+					interconnect.copy(entityInfo.getChildFieldList(), reqBean, saveBean);
+					// Child list
+					interconnect.copy(entityInfo.getChildListFieldList(), reqBean, saveBean);
+				}
+
+				if (req.version()) {
+					PropertyUtils.setProperty(saveBean, entityInfo.getVersionNoFieldName(), versionNo);
+				}
+
+				em.merge(saveBean);
+				result = new Object[] { 1L };
+			}
+				break;
+			case UPDATE_ALL:
+				break;
+			case VALUE:
+			case VALUE_LIST: {
+				CriteriaQuery<Tuple> cq = createTupleQuery(entityInfo.getImplClass(), req);
+				List<Tuple> tupleResult = em.createQuery(cq).getResultList();
+				if (!req.getOperation().isMultipleResult()) {
+					if (tupleResult.size() > 1) {
+						throw new RuntimeException(
+								"Mutiple records found on single item operation on entity [" + req.getEntity() + "].");
+					}
+				}
+
+				result = new Object[tupleResult.size()];
+				for (int i = 0; i < result.length; i++) {
+					result[i] = tupleResult.get(i).get(0);
 				}
 			}
+				break;
+			default:
+				break;
 
-			result = results.toArray(new Object[results.size()]);
-		}
-			break;
-		case UPDATE:
-		case UPDATE_LEAN: {
-			Object reqBean = interconnect.getBeanFromJsonPayload(req);
-			Object id = PropertyUtils.getProperty(reqBean, entityInfo.getIdFieldName());
-			Object saveBean = em.find(entityInfo.getImplClass(), id);
-			Object versionNo = req.version() ? PropertyUtils.getProperty(saveBean, entityInfo.getVersionNoFieldName())
-					: null;
-			// References
-			interconnect.copy(entityInfo.getRefFieldList(), reqBean, saveBean);
-			// Fields
-			interconnect.copy(entityInfo.getFieldList(), reqBean, saveBean);
-
-			if (!req.getOperation().isLean()) {
-				// Child
-				interconnect.copy(entityInfo.getChildFieldList(), reqBean, saveBean);
-				// Child list
-				interconnect.copy(entityInfo.getChildListFieldList(), reqBean, saveBean);
 			}
-
-			if (req.version()) {
-				PropertyUtils.setProperty(saveBean, entityInfo.getVersionNoFieldName(), versionNo);
-			}
-
-			em.merge(saveBean);
-			result = new Object[] { 1L };
-		}
-			break;
-		case UPDATE_ALL:
-			break;
-		case VALUE:
-		case VALUE_LIST: {
-			CriteriaQuery<Tuple> cq = createTupleQuery(entityInfo.getImplClass(), req);
-			List<Tuple> tupleResult = em.createQuery(cq).getResultList();
-			if (!req.getOperation().isMultipleResult()) {
-				if (tupleResult.size() > 1) {
-					throw new RuntimeException(
-							"Mutiple records found on single item operation on entity [" + req.getEntity() + "].");
-				}
-			}
-
-			result = new Object[tupleResult.size()];
-			for (int i = 0; i < result.length; i++) {
-				result[i] = tupleResult.get(i).get(0);
-			}
-		}
-			break;
-		default:
-			break;
-
 		}
 
 		return interconnect.createDataSourceResponse(result, req);

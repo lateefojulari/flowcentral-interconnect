@@ -113,7 +113,8 @@ public class Interconnect {
                                             .description(entityConfig.getDescription())
                                             .implementation(entityConfig.getImplementation())
                                             .idFieldName(entityConfig.getIdFieldName())
-                                            .versionNoFieldName(entityConfig.getVersionNoFieldName());
+                                            .versionNoFieldName(entityConfig.getVersionNoFieldName())
+                                            .handler(entityConfig.getHandler());
                                     for (EntityFieldConfig entityFieldConfig : entityConfig.getEntityFieldList()) {
                                         eib.addField(entityFieldConfig.getType(), entityFieldConfig.getName(),
                                                 ensureLongName(applicationName, entityFieldConfig.getReferences()),

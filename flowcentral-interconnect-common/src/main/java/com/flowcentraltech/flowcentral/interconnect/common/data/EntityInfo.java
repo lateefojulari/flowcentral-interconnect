@@ -39,6 +39,8 @@ public class EntityInfo {
 
     private String versionNoFieldName;
 
+    private String handler;
+
     private Class<?> implClass;
 
     private Map<String, EntityFieldInfo> fieldsByName;
@@ -53,11 +55,13 @@ public class EntityInfo {
 
     private List<EntityFieldInfo> childListFieldList;
 
-    public EntityInfo(String name, String description, String idFieldName, String versionNoFieldName, Class<?> implClass, Map<String, EntityFieldInfo> fieldsByName) {
+	public EntityInfo(String name, String description, String idFieldName, String versionNoFieldName,
+			String handler, Class<?> implClass, Map<String, EntityFieldInfo> fieldsByName) {
         this.name = name;
         this.description = description;
         this.idFieldName = idFieldName;
         this.versionNoFieldName = versionNoFieldName;
+        this.handler = handler;
         this.implClass = implClass;
         this.fieldsByName = fieldsByName;
         this.refFieldList = new ArrayList<EntityFieldInfo>();
@@ -102,7 +106,15 @@ public class EntityInfo {
         return versionNoFieldName;
     }
 
-    public Class<?> getImplClass() {
+    public String getHandler() {
+		return handler;
+	}
+
+    public boolean isWithHandler() {
+    	return handler != null && !handler.trim().isEmpty();
+    }
+    
+	public Class<?> getImplClass() {
         return implClass;
     }
 
@@ -153,6 +165,8 @@ public class EntityInfo {
 
         private String versionNoFieldName;
 
+        private String handler;
+
         private String implementation;
 
         private Map<String, EntityFieldInfo> fieldsByName;
@@ -178,6 +192,11 @@ public class EntityInfo {
 
         public Builder versionNoFieldName(String versionNoFieldName) {
             this.versionNoFieldName = versionNoFieldName;
+            return this;
+        }
+
+        public Builder handler(String handler) {
+            this.handler = handler;
             return this;
         }
 
@@ -220,7 +239,7 @@ public class EntityInfo {
             }
             
             Class<?> implClass = Class.forName(implementation);
-            return new EntityInfo(name, description, idFieldName, versionNoFieldName, implClass, fieldsByName);
+            return new EntityInfo(name, description, idFieldName, versionNoFieldName, handler, implClass, fieldsByName);
         }
     }
 

@@ -73,4 +73,10 @@ public class FilterRestrictionDef {
         return type.isCompound();
     }
 
+	@Override
+	public String toString() {
+		return "FilterRestrictionDef [type=" + type + ", fieldName=" + fieldName + ", paramA=" + paramA + ", paramB="
+				+ paramB + ", depth=" + depth + "]";
+	}
+
 }

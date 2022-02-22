@@ -38,6 +38,8 @@ public class EntityConfig {
 
     private String versionNoFieldName;
 
+    private String handler;
+
     private List<EntityFieldConfig> entityFieldList;
 
     public String getName() {
@@ -85,7 +87,16 @@ public class EntityConfig {
         this.versionNoFieldName = versionNoFieldName;
     }
 
-    public List<EntityFieldConfig> getEntityFieldList() {
+    public String getHandler() {
+		return handler;
+	}
+
+    @XmlAttribute(name = "handler")
+	public void setHandler(String handler) {
+		this.handler = handler;
+	}
+
+	public List<EntityFieldConfig> getEntityFieldList() {
         return entityFieldList;
     }
 
